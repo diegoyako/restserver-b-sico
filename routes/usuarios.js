@@ -2,7 +2,13 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
-const { validarCampos } = require('../middlewares/validar-campos')
+const {
+    validarCampos,
+    validarJWT,
+    esAdminRole,
+    tieneRole } = require('../middlewares');
+
+
 const { esRoleValido, emailExiste, existeUsuarioPorId } = require('../helpers/db-validators');
 
 
@@ -36,11 +42,16 @@ router.put('/:id', [
 
 router.patch('/', usuariosPatch);
 
+
 router.delete('/:id', [
+    // los middlewares las validaciones se hacen secuenciales, si tienen next van dando siguiente a menos que tengan error.
+    validarJWT,
+    //esAdminRole,
+    tieneRole('ADMIN_ROLE', 'VENTAS_ROLE', 'OTRO_ROLE'),
     check('id', 'No es un ID válido').isMongoId(),
     check('id').custom(existeUsuarioPorId),
     validarCampos
-] ,usuariosDelete);
+], usuariosDelete);
 
 
 

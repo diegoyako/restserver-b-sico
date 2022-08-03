@@ -11,6 +11,9 @@ class Server {
         this.port = process.env.PORT;
         // cualquier persona que vea mi servidor vea cuales son las rutas que dispone
         this.usuariosPath = '/api/usuarios';
+        // path para Autentificación
+        this.authPath = '/api/auth';
+
 
         //Conectar a base de datos
         this.conectarDB();
@@ -40,8 +43,10 @@ class Server {
     }
 
     routes() {
-
+        // defino ruta haciendo require la importacion por defecto de auth y usuarios
+        this.app.use(this.authPath, require('../routes/auth'));
         this.app.use(this.usuariosPath, require('../routes/usuarios'));
+
     }
 
     listen() {
