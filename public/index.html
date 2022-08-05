@@ -20,7 +20,7 @@
     <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with"
         data-shape="rectangular" data-logo_alignment="left">
     </div>
-    
+
     <button id="google_signout">
         Signout
     </button>
@@ -32,18 +32,21 @@
 
             // GOOGLE TOKEN : ID_TOKEN
             // console.log('id_token', response.credential);
-            const body = {id_token: response.credential};
+            const body = { id_token: response.credential };
             // END POINT basado en nuestro front end
-            fetch('http://localhost:8080/api/auth/google',{
+            fetch(window.location.hostname.includes('localhost')
+
+                ? 'http://localhost:8080/api/auth/google'
+                : 'https://restserver-backend-basico.herokuapp.com/api/auth/google', {
                 // configuración del método
                 method: 'POST',
                 headers: {
-                    'Content-Type':"application/json"
+                    'Content-Type': "application/json"
                 },
-                body:JSON.stringify(body)
+                body: JSON.stringify(body)
             })
-                .then( resp => resp.json() )
-                .then(resp =>{
+                .then(resp => resp.json())
+                .then(resp => {
                     console.log(resp)
                     localStorage.setItem('email', resp.usuario.correo)
                 })
@@ -58,7 +61,7 @@
             console.log(google.accounts.id)
             google.accounts.id.disableAutoSelect()
 
-            google.accounts.id.revoke( localStorage.getItem('email'), done =>{
+            google.accounts.id.revoke(localStorage.getItem('email'), done => {
                 localStorage.clear();
                 location.reload();
             });
