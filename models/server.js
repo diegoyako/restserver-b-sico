@@ -3,16 +3,21 @@ const cors = require('cors');
 const router = require('../routes/usuarios');
 
 const { dbConnection } = require('../database/config');
+const usuario = require('./usuario');
 
 class Server {
 
     constructor() {
         this.app = express();
         this.port = process.env.PORT;
-        // cualquier persona que vea mi servidor vea cuales son las rutas que dispone
-        this.usuariosPath = '/api/usuarios';
-        // path para Autentificación
-        this.authPath = '/api/auth';
+
+        this.paths = {
+            // path para Autentificación
+            auth: '/api/auth',
+            categorias: '/api/categorias',
+            // cualquier persona que vea mi servidor vea cuales son las rutas que dispone
+            usuarios: '/api/usuarios',
+        }
 
 
         //Conectar a base de datos
@@ -44,8 +49,9 @@ class Server {
 
     routes() {
         // defino ruta haciendo require la importacion por defecto de auth y usuarios
-        this.app.use(this.authPath, require('../routes/auth'));
-        this.app.use(this.usuariosPath, require('../routes/usuarios'));
+        this.app.use(this.paths.auth, require('../routes/auth'));
+        this.app.use(this.paths.categorias, require('../routes/categorias'));
+        this.app.use(this.paths.usuarios, require('../routes/usuarios'));
 
     }
 
